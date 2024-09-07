@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  # postgres:
+  #   container_name: postgres_container
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     PGDATA: /data/postgres
+  #     POSTGRES_DB: ${POSTGRES_DB} 
+  #   volumes:
+  #     - ./data/pg:/data/postgres
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - postgres
+  #   restart: unless-stopped
+
+  tg_bot:
+    container_name: tg_bot
+    build:
+      dockerfile: Dockerfile
+    environment:
+      TG_TOKEN: ${TG_TOKEN}
+      WORKDIR: ${WORKDIR}
+    volumes:
+      - ./data/images:/data/images
+      - ./data/audio:/data/audio
+    networks:
+      - postgres
+    restart: on-failure
+
+networks:
+  postgres:
+    driver: bridge
