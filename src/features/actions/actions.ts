@@ -9,7 +9,15 @@ import {
 import { Paths, Steps } from '@shared/constants/buttons';
 
 const sendStep = async (ctx: BotContext, messages: PathMessages) => {
-	await ctx.replyWithMediaGroup(messages.media);
+	if (messages.media) {
+		await ctx.replyWithMediaGroup(messages.media);
+	}
+
+	if (messages.caption) {
+		await ctx.reply(messages.caption.message, {
+			parse_mode: 'HTML',
+		});
+	}
 
 	if (messages.audio) {
 		await ctx.replyWithMediaGroup(messages.audio);
@@ -21,9 +29,13 @@ const sendStep = async (ctx: BotContext, messages: PathMessages) => {
 export const addActions = (bot: Telegraf<BotContext>) => {
 	bot.action(Object.values(Paths), async (ctx) => {
 		try {
-			await ctx.deleteMessage(
-				ctx.update.callback_query.message?.message_id
-			);
+			try {
+				await ctx.deleteMessage(
+					ctx.update.callback_query.message?.message_id
+				);
+			} catch (err) {
+				console.error(err);
+			}
 
 			const messages = pathMessages.find(
 				({ callback_data }) => callback_data === ctx.match.input
@@ -43,9 +55,13 @@ export const addActions = (bot: Telegraf<BotContext>) => {
 		new RegExp(`${Object.values(Steps).join('|')}$`, 'gm'),
 		async (ctx) => {
 			try {
-				await ctx.deleteMessage(
-					ctx.update.callback_query.message?.message_id
-				);
+				try {
+					await ctx.deleteMessage(
+						ctx.update.callback_query.message?.message_id
+					);
+				} catch (err) {
+					console.error(err);
+				}
 
 				const messages = pathMessages.find(
 					({ callback_data }) => callback_data === ctx.match.input

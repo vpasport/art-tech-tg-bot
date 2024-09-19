@@ -9,7 +9,20 @@ export const addStart = (bot: Telegraf<BotContext>) => {
 		try {
 			const messages = startMessage(ctx.chat as Chat.PrivateChat);
 
-			await ctx.replyWithMediaGroup(messages.media);
+			// await ctx.replyWithMediaGroup(messages.media);
+			await ctx.replyWithAnimation(messages.media[0].media);
+			
+			if (messages.secondMessage) {
+				await ctx.reply(messages.secondMessage.message, {
+					reply_markup: messages.secondMessage.keyboard
+						? {
+								inline_keyboard:
+									messages.secondMessage.keyboard,
+						  }
+						: undefined,
+					parse_mode: 'HTML',
+				});
+			}
 			await ctx.reply(messages.replay.message, {
 				reply_markup: {
 					inline_keyboard: messages.replay.keyboard,
