@@ -20,4 +20,5 @@ jobs:
           cd /root/art-tech-tg-bot
           git pull origin main
           git status
+          docker compose down
           docker compose --env-file .env up -d --build
